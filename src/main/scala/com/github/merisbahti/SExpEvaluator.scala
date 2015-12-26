@@ -1,8 +1,6 @@
 package com.github.merisbahti
 
-case class Env(env: Map[SymbolT,Expr]) {
-  def get(s: SymbolT) = env.get(s)
-}
+import TypeAliases._
 
 trait Expr {
   def eval(env: Env): (Expr, Env)
