@@ -8,8 +8,8 @@ class ParserSpec extends FlatSpec with Matchers {
     symbolInputs.foreach { (s: String) =>
       SExpParser.parse(SExpParser.symbol, s) match {
         case SExpParser.Success(matched,_) => assert(true)
-        case SExpParser.Failure(msg,_)     => assert(false, "FAILURE: " + msg)
-        case SExpParser.Error(msg,_)       => assert(false, "ERROR: " + msg)
+        case SExpParser.Failure(msg,_)     => fail("FAILURE: " + msg)
+        case SExpParser.Error(msg,_)       => fail("ERROR: " + msg)
       }
     }
   }
@@ -20,8 +20,8 @@ class ParserSpec extends FlatSpec with Matchers {
       case (s, value) =>
       SExpParser.parse(SExpParser.int, s) match {
         case SExpParser.Success(matched,_) => assert(matched === value)
-        case SExpParser.Failure(msg,_)     => assert(false, "FAILURE: " + msg)
-        case SExpParser.Error(msg,_)       => assert(false, "ERROR: " + msg)
+        case SExpParser.Failure(msg,_)     => fail("FAILURE: " + msg)
+        case SExpParser.Error(msg,_)       => fail("ERROR: " + msg)
       }
     }
   }
@@ -36,8 +36,8 @@ class ParserSpec extends FlatSpec with Matchers {
       case (s, comb) =>
       SExpParser.parse(SExpParser.comb, s) match {
         case SExpParser.Success(matched,_) => assert(matched === comb)
-        case SExpParser.Failure(msg,_)     => assert(false, "FAILURE: " + msg)
-        case SExpParser.Error(msg,_)       => assert(false, "ERROR: " + msg)
+        case SExpParser.Failure(msg,_)     => fail("FAILURE: " + msg)
+        case SExpParser.Error(msg,_)       => fail("ERROR: " + msg)
       }
     }
   }
@@ -62,8 +62,8 @@ class ParserSpec extends FlatSpec with Matchers {
     ))
     SExpParser.parse(SExpParser.comb, input) match {
       case SExpParser.Success(matched,_) => assert(matched === corrComb)
-      case SExpParser.Failure(msg,_)     => assert(false, "FAILURE: " + msg)
-      case SExpParser.Error(msg,_)       => assert(false, "ERROR: " + msg)
+      case SExpParser.Failure(msg,_)     => fail("FAILURE: " + msg)
+      case SExpParser.Error(msg,_)       => fail("ERROR: " + msg)
     }
   }
 }

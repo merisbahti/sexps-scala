@@ -24,7 +24,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
     SExpParser.parse(SExpParser.comb, input) match {
       case SExpParser.Success(matched,_) =>
         assert(matched.eval(stdLib)._1 === Int(9))
-      case _ => assert(false, "Failed to parse test-input")
+      case _ => fail("Failed to parse test-input")
     }
   }
 
@@ -33,7 +33,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
     SExpParser.parse(SExpParser.comb, input) match {
       case SExpParser.Success(matched,_) =>
         assert(matched.eval(stdLib)._1 === Int(10))
-      case _ => assert(false, "Failed to parse test-input")
+      case _ => fail("Failed to parse test-input")
     }
   }
 
@@ -41,7 +41,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
     val input = "(+ one one one one)"
     SExpParser.parse(SExpParser.comb, input) match {
       case SExpParser.Success(matched, _) => assert(matched.eval(stdLib)._1 === Int(4))
-      case _ => assert(false, "Failed to parse test-input")
+      case _ => fail("Failed to parse test-input")
     }
   }
 
@@ -51,7 +51,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
       SExpParser.parse(SExpParser.comb, input) match {
         case SExpParser.Success(matched,_) =>
           assert(matched.eval(stdLib)._1 === Int(10))
-        case _ => assert(false, "Failed to parse test-input")
+        case _ => fail("Failed to parse test-input")
       }
     }
   }
