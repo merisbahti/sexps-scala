@@ -2,6 +2,8 @@ import org.scalatest._
 import com.github.merisbahti._
 import scala.util.parsing.combinator._
 
+import TypeAliases._
+
 class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
   var stdLib: Map[SymbolT, Expr] = _
   before {
@@ -52,5 +54,19 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
         case _ => fail("Failed to parse test-input")
       }
     }
+  }
+
+  "define" should "work" in {
+    val input = "(define xs (* 3 2))" +
+                 "(+ xs 2)"
+    SExpParser.parse(SExpParser.program, input) match {
+      case SExpParser.Success(matched,_) =>
+        matched.foldLeft(matched.head.eval(stdLib)){
+          case ((_: Expr, env: Env), e: Expr) =>
+            e.eval(env)
+        }
+      case _ => fail("Failed to parse test-input")
+    }
+
   }
 }

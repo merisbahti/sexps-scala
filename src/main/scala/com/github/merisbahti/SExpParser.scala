@@ -8,4 +8,6 @@ object SExpParser extends RegexParsers {
   def int:    Parser[Int]     = """-?\d+""".r ^^ { (x) => Int(x.toInt) }
   def expr:   Parser[Expr]    = int | symbol | comb
   def comb:   Parser[Comb]    = "(" ~> rep(expr) <~ ")" ^^ { Comb(_) }
+  def program: Parser[List[Expr]] = rep(expr)
+
 }

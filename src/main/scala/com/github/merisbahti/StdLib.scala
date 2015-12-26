@@ -16,6 +16,15 @@ object StdLib {
       }
   })
 
+  // (define abc (2))
+  def define = Proc({
+    (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
+      xs match {
+        case ((newDef:SymbolT) :: List(expr)) => (newDef, sEnv ++ Map(newDef -> expr))
+        case _ => throw new IllegalStateException("2: NonoNo")
+      }
+  })
+
   def plus  = arithmeticProc(_+_)
   def minus = arithmeticProc(_-_)
   def mul   = arithmeticProc(_*_)
@@ -26,6 +35,7 @@ object StdLib {
     SymbolT("-") -> minus,
     SymbolT("*") -> mul,
     SymbolT("/") -> div,
-    SymbolT("%") -> mod
+    SymbolT("%") -> mod,
+    SymbolT("define") -> define
     )
 }
