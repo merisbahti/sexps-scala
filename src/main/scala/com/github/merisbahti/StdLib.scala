@@ -7,12 +7,16 @@ package object TypeAliases {
 object StdLib {
   def arithmeticProc(op: ((Integer, Integer) => (Integer))) = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
-      xs.tail.foldLeft(xs.head.eval(sEnv)) {
-        case ((Int(sum), env: Map[SymbolT, Expr]), a: Expr) =>
-          a.eval(env) match {
-            case (Int(value), nEnv) => (Int(op(sum,value)), nEnv)
-            case _ => throw new IllegalStateException("Not int!")
+      xs.head.eval(sEnv) match {
+        case ((a: Int), (e: Map[SymbolT, Expr])) =>
+          xs.tail.foldLeft(xs.head.eval(sEnv)) {
+            case ((Int(sum), env: Map[SymbolT, Expr]), a: Expr) =>
+              a.eval(env) match {
+                case (Int(value), nEnv) => (Int(op(sum,value)), nEnv)
+                case _ => throw new ArithmeticException("Not int found in arit")
+              }
           }
+        case _ => throw new ArithmeticException("Not int found in arit")
       }
   })
 

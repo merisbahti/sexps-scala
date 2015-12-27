@@ -37,7 +37,7 @@ case class Int(value: Integer) extends Value {
 }
 
 object NullValue extends Value {
-  def eval(env: Env) = (Int(1), env)
+  def eval(env: Env) = (NullValue, env)
 }
 
 case class Program(exprs: List[Expr]) {

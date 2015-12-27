@@ -46,14 +46,16 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
   }
 
   "StdLib +" should "fail if all expressions except head aren't Int" in {
-    val input = """(+ 3 2 +)"""
-    intercept[IllegalStateException] {
-      SExpParser.parse(SExpParser.comb, input) match {
-        case SExpParser.Success(matched,_) =>
-          assert(matched.eval(stdLib)._1 === Int(10))
-        case _ => fail("Failed to parse test-input")
+    val inputs = List("(+ 3 2 +)", "(+ (display 3) 2)")
+    inputs.foreach { (input: String) =>
+      intercept[ArithmeticException] {
+        SExpParser.parse(SExpParser.comb, input) match {
+          case SExpParser.Success(matched, _) => matched.eval(StdLib.stdLib)
+          case _ => fail("Failed to parse test-input")
+        }
       }
     }
+
   }
 
   "define" should "work" in {
@@ -76,4 +78,5 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
       case _ => fail("Failed to parse test-input")
     }
   }
+
 }
