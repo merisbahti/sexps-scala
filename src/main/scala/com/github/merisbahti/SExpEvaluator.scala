@@ -28,7 +28,7 @@ case class SymbolT(name: String) extends Expr {
   def eval(env: Env) = env.get(this) match {
       case (a: Value) => (a, env)
       case Some(x)    => x.eval(env)
-      case None       => throw new IllegalStateException(s"$name is not defined in the environment")
+      case None       => (NullValue, env)
   }
 }
 
