@@ -25,6 +25,12 @@ object StdLib {
       }
   })
 
+  def display = Proc({
+    case (x, e: Map[SymbolT, Expr]) =>
+      println(s"$x")
+      (NullValue, e)
+  })
+
   def plus  = arithmeticProc(_+_)
   def minus = arithmeticProc(_-_)
   def mul   = arithmeticProc(_*_)
@@ -36,6 +42,7 @@ object StdLib {
     SymbolT("*") -> mul,
     SymbolT("/") -> div,
     SymbolT("%") -> mod,
-    SymbolT("define") -> define
+    SymbolT("define") -> define,
+    SymbolT("display") -> display
     )
 }

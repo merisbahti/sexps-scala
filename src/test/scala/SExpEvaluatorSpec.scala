@@ -67,6 +67,13 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
         }
       case _ => fail("Failed to parse test-input")
     }
+  }
 
+  "display" should "work" in {
+    val input = "(display 10)"
+    SExpParser.parse(SExpParser.comb, input) match {
+      case SExpParser.Success(matched,_) => matched.eval(stdLib)
+      case _ => fail("Failed to parse test-input")
+    }
   }
 }
