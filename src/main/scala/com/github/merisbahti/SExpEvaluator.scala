@@ -39,3 +39,9 @@ case class Int(value: Integer) extends Value {
 object NullValue extends Value {
   def eval(env: Env) = (Int(1), env)
 }
+
+case class Program(exprs: List[Expr]) {
+  def run() = exprs.tail.foldLeft(exprs.head.eval(StdLib.stdLib)) {
+    case ((_, nEnv: Env), exp: Expr) => exp.eval(nEnv)
+  }
+}

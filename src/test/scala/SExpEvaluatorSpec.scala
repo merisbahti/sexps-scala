@@ -61,7 +61,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
                  "(+ xs 2)"
     SExpParser.parse(SExpParser.program, input) match {
       case SExpParser.Success(matched,_) =>
-        matched.foldLeft(matched.head.eval(stdLib)){
+        matched.exprs.foldLeft(matched.exprs.head.eval(stdLib)){
           case ((_: Expr, env: Env), e: Expr) =>
             e.eval(env)
         }
