@@ -13,21 +13,32 @@ object StdLib {
             case ((Int(sum), env: Map[SymbolT, Expr]), a: Expr) =>
               a.eval(env) match {
                 case (Int(value), nEnv) => (Int(op(sum,value)), nEnv)
-                case _ => throw new ArithmeticException("Not int found in arit")
+                case _ => throw new ArithmeticException("Not int found in arit: 2")
               }
           }
-        case _ => throw new ArithmeticException("Not int found in arit")
+        case _ => throw new ArithmeticException("Not int found in arit: 1")
       }
   })
 
   // (define abc (2))
+  // (define (abc a1 a2) (expr/
   def define = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
+      println(s"xs: $xs")
       xs match {
-        case ((newDef:SymbolT) :: List(expr)) => (newDef, sEnv ++ Map(newDef -> expr))
+        case ((defs: Comb):: List(body:Comb)) =>
+          mkFunc(defs.exprs, body, sEnv)
+        case ((newDef: SymbolT) :: List(expr)) => (newDef, sEnv ++ Map(newDef -> expr))
         case _ => throw new IllegalStateException("2: NonoNo")
       }
   })
+
+  def mkFunc(defs: List[Expr], body: Comb, sEnv: Map[SymbolT, Expr]) =
+    defs match {
+      case((name: SymbolT) :: (vars: List[SymbolT])) =>
+        (name, sEnv ++ Map(name -> Func(name, vars, body)))
+      case _ => throw new IllegalStateException("Sumtin unexpected")
+    }
 
   def display = Proc({
     case (x, e: Map[SymbolT, Expr]) =>
