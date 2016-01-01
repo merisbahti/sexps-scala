@@ -8,7 +8,7 @@ object StdLib {
   def arithmeticProc(op: (Integer, Integer) => (Integer)) = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
       xs.head.eval(sEnv) match {
-        case ((a: Int), (e: Map[SymbolT, Expr])) =>
+        case (a: Int, e: Map[SymbolT, Expr]) =>
           xs.tail.foldLeft(xs.head.eval(sEnv)) {
             case ((Int(sum), env: Map[SymbolT, Expr]), a: Expr) =>
               a.eval(env) match {
@@ -24,7 +24,6 @@ object StdLib {
   // (define (abc a1 a2) (expr/
   def define = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
-      println(s"xs: $xs")
       xs match {
         case ((defs: Comb):: List(body:Comb)) =>
           mkFunc(defs.exprs, body, sEnv)
@@ -45,6 +44,24 @@ object StdLib {
       println(s"$x")
       (NullValue, e)
   })
+  def predicateProc(op: (Boolean, Boolean) => (Boolean)) = Proc({
+    (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
+      xs.head.eval(sEnv) match {
+        case (a: Bool, e: Map[SymbolT, Expr]) =>
+          xs.tail.foldLeft(xs.head.eval(sEnv)) {
+            case ((Bool(sum), env: Map[SymbolT, Expr]), a: Expr) =>
+              a.eval(env) match {
+                case (Bool(value), nEnv) => (Bool(op(sum,value)), nEnv)
+                case _ => throw new ArithmeticException("Not bool found in pred: 2")
+              }
+          }
+        case _ =>
+          throw new ArithmeticException(s"Not bool found in pred: 1 ${xs.head} = ${xs.head.eval(sEnv)}")
+      }
+  })
+
+  def and   = predicateProc(_&&_)
+  def or    = predicateProc(_||_)
 
   def plus  = arithmeticProc(_+_)
   def minus = arithmeticProc(_-_)
@@ -57,6 +74,10 @@ object StdLib {
     SymbolT("*") -> mul,
     SymbolT("/") -> div,
     SymbolT("%") -> mod,
+    SymbolT("true") -> Bool(true),
+    SymbolT("false") -> Bool(false),
+    SymbolT("and") -> and,
+    SymbolT("or") -> or,
     SymbolT("define") -> define,
     SymbolT("display") -> display
     )

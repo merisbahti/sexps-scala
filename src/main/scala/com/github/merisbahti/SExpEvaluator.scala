@@ -55,7 +55,7 @@ object NullValue extends Value {
   def eval(env: Env) = (this, env)
 }
 
-case class Boolean(value: Boolean) extends Expr {
+case class Bool(value: Boolean) extends Expr {
   def eval(a: Env) = (this, a)
 }
 

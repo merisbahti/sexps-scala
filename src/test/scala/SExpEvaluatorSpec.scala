@@ -36,6 +36,36 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
     }
   }
 
+  "StdLib" should "have support for and & or"in {
+    val inputs = List(
+      "(and false true)",
+      "(or  false true)",
+      "(and true true)",
+      "(or  false false)",
+      "(and true false)",
+      "(or  true false)",
+      "(and false false)",
+      "(or  true true)"
+    )
+    val answers = List(
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      false,
+      true
+    )
+
+    inputs.zip(answers).foreach { case ((input: String, answer: Boolean)) =>
+      SExpParser.parse(SExpParser.comb, input) match {
+        case SExpParser.Success(matched, _) => assert(matched.eval(stdLib)._1 === Bool(answer))
+        case _ => fail("Failed to parse test-input")
+      }
+    }
+  }
+
   "Environment" should "be able to resolve symbols which point to values" in {
     val env = StdLib.stdLib ++ Map(SymbolT("one") -> Int(1))
     val input = "(+ one one one one)"
