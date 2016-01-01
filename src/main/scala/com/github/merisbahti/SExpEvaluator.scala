@@ -12,6 +12,7 @@ trait Applyable {
   def apply(args: List[Expr], env: Env): (Expr, Env)
 }
 
+
 case class Proc(f: (List[Expr], Env) => (Expr, Env)) extends Expr with Applyable{
   def apply(args: List[Expr], env: Env) = f(args, env)
   def eval(a: Env) = (this,a)
@@ -47,11 +48,15 @@ case class SymbolT(name: String) extends Expr {
 }
 
 case class Int(value: Integer) extends Value {
-  def eval(env: Env) = (Int(value), env)
+  def eval(env: Env) = (this, env)
 }
 
 object NullValue extends Value {
-  def eval(env: Env) = (NullValue, env)
+  def eval(env: Env) = (this, env)
+}
+
+case class Boolean(value: Boolean) extends Expr {
+  def eval(a: Env) = (this, a)
 }
 
 case class Program(exprs: List[Expr]) {

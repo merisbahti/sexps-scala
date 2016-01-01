@@ -5,7 +5,7 @@ package object TypeAliases {
 }
 
 object StdLib {
-  def arithmeticProc(op: ((Integer, Integer) => (Integer))) = Proc({
+  def arithmeticProc(op: (Integer, Integer) => (Integer)) = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
       xs.head.eval(sEnv) match {
         case ((a: Int), (e: Map[SymbolT, Expr])) =>
