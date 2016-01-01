@@ -40,8 +40,8 @@ object StdLib {
     }
 
   def display = Proc({
-    case (x, e: Map[SymbolT, Expr]) =>
-      println(s"$x")
+    case (xs, e) =>
+      xs.foreach(x=> println(s"${x.eval(e)._1}"))
       (NullT, e)
   })
 
@@ -57,7 +57,7 @@ object StdLib {
               }
           }
         case _ =>
-          throw new ArithmeticException(s"Not bool found in pred: 1 ${xs.head} = ${xs.head.eval(sEnv)}")
+          throw new ArithmeticException("Not bool found in pred: 1")
       }
   })
 
