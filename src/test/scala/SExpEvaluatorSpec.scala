@@ -14,7 +14,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
     val input = "(+ 3 2 4)"
     SExpParser.parse(SExpParser.comb, input) match {
       case SExpParser.Success(matched,_) =>
-        assert(matched.eval(stdLib)._1 === Int(9))
+        assert(matched.eval(stdLib)._1 === IntT(9))
       case _ => fail("Failed to parse test-input")
     }
   }
@@ -23,7 +23,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
     val input = """(+ 3 2 (+ 2 3))"""
     SExpParser.parse(SExpParser.comb, input) match {
       case SExpParser.Success(matched,_) =>
-        assert(matched.eval(stdLib)._1 === Int(10))
+        assert(matched.eval(stdLib)._1 === IntT(10))
       case _ => fail("Failed to parse test-input")
     }
   }
@@ -31,7 +31,7 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
   "StdLib" should "have support for +-/*%" in {
     val input = "(+ 2 (* 3 2) (/ 4 2) (% 4 2))"
     SExpParser.parse(SExpParser.comb, input) match {
-      case SExpParser.Success(matched, _) => assert(matched.eval(stdLib)._1 === Int(10))
+      case SExpParser.Success(matched, _) => assert(matched.eval(stdLib)._1 === IntT(10))
       case _ => fail("Failed to parse test-input")
     }
   }
@@ -60,17 +60,17 @@ class SExpEvaluatorSpec extends FlatSpec with Matchers with BeforeAndAfter {
 
     inputs.zip(answers).foreach { case ((input: String, answer: Boolean)) =>
       SExpParser.parse(SExpParser.comb, input) match {
-        case SExpParser.Success(matched, _) => assert(matched.eval(stdLib)._1 === Bool(answer))
+        case SExpParser.Success(matched, _) => assert(matched.eval(stdLib)._1 === BoolT(answer))
         case _ => fail("Failed to parse test-input")
       }
     }
   }
 
   "Environment" should "be able to resolve symbols which point to values" in {
-    val env = StdLib.stdLib ++ Map(SymbolT("one") -> Int(1))
+    val env = StdLib.stdLib ++ Map(SymbolT("one") -> IntT(1))
     val input = "(+ one one one one)"
     SExpParser.parse(SExpParser.comb, input) match {
-      case SExpParser.Success(matched, _) => assert(matched.eval(env)._1 === Int(4))
+      case SExpParser.Success(matched, _) => assert(matched.eval(env)._1 === IntT(4))
       case _ => fail("Failed to parse test-input")
     }
   }

@@ -15,7 +15,7 @@ class ParserSpec extends FlatSpec with Matchers {
   }
   "SExpParser" should "parse integers correctly" in {
     val integerInputs = List("12", "23", "34", "-12")
-    val integerValues = integerInputs.map {(x: String) => Int(x.toInt)}
+    val integerValues = integerInputs.map {(x: String) => IntT(x.toInt)}
     integerInputs.zip(integerValues).foreach {
       case (s, value) =>
       SExpParser.parse(SExpParser.int, s) match {
@@ -29,8 +29,8 @@ class ParserSpec extends FlatSpec with Matchers {
     val combInputs = List("(+ 2 3 4 5)",
       "(- 2)")
     val combValues = List(
-      Comb(List(SymbolT("+"), Int(2) , Int(3), Int(4), Int(5))),
-      Comb(List(SymbolT("-"), Int(2)))
+      Comb(List(SymbolT("+"), IntT(2) , IntT(3), IntT(4), IntT(5))),
+      Comb(List(SymbolT("-"), IntT(2)))
     )
     combInputs.zip(combValues).foreach {
       case (s, comb) =>
@@ -47,16 +47,16 @@ class ParserSpec extends FlatSpec with Matchers {
       SymbolT("+"),
       Comb(List(
         SymbolT("-"),
-        Int(2),
-        Int(3)
+        IntT(2),
+        IntT(3)
         )),
       Comb(List(
         SymbolT("*"),
-        Int(4),
+        IntT(4),
         Comb(List(
           SymbolT("+"),
-          Int(3),
-          Int(5)
+          IntT(3),
+          IntT(5)
           ))
         ))
     ))

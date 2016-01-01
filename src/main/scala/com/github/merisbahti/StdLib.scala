@@ -8,11 +8,11 @@ object StdLib {
   def arithmeticProc(op: (Integer, Integer) => (Integer)) = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
       xs.head.eval(sEnv) match {
-        case (a: Int, e: Map[SymbolT, Expr]) =>
+        case (a: IntT, e: Map[SymbolT, Expr]) =>
           xs.tail.foldLeft(xs.head.eval(sEnv)) {
-            case ((Int(sum), env: Map[SymbolT, Expr]), a: Expr) =>
+            case ((IntT(sum), env: Map[SymbolT, Expr]), a: Expr) =>
               a.eval(env) match {
-                case (Int(value), nEnv) => (Int(op(sum,value)), nEnv)
+                case (IntT(value), nEnv) => (IntT(op(sum,value)), nEnv)
                 case _ => throw new ArithmeticException("Not int found in arit: 2")
               }
           }
@@ -42,16 +42,17 @@ object StdLib {
   def display = Proc({
     case (x, e: Map[SymbolT, Expr]) =>
       println(s"$x")
-      (NullValue, e)
+      (NullT, e)
   })
+
   def predicateProc(op: (Boolean, Boolean) => (Boolean)) = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
       xs.head.eval(sEnv) match {
-        case (a: Bool, e: Map[SymbolT, Expr]) =>
+        case (a: BoolT, e: Map[SymbolT, Expr]) =>
           xs.tail.foldLeft(xs.head.eval(sEnv)) {
-            case ((Bool(sum), env: Map[SymbolT, Expr]), a: Expr) =>
+            case ((BoolT(sum), env: Map[SymbolT, Expr]), a: Expr) =>
               a.eval(env) match {
-                case (Bool(value), nEnv) => (Bool(op(sum,value)), nEnv)
+                case (BoolT(value), nEnv) => (BoolT(op(sum,value)), nEnv)
                 case _ => throw new ArithmeticException("Not bool found in pred: 2")
               }
           }
@@ -74,8 +75,8 @@ object StdLib {
     SymbolT("*") -> mul,
     SymbolT("/") -> div,
     SymbolT("%") -> mod,
-    SymbolT("true") -> Bool(true),
-    SymbolT("false") -> Bool(false),
+    SymbolT("true") -> BoolT(true),
+    SymbolT("false") -> BoolT(false),
     SymbolT("and") -> and,
     SymbolT("or") -> or,
     SymbolT("define") -> define,

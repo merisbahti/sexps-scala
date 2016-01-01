@@ -6,6 +6,7 @@ trait Expr {
   def eval(env: Env): (Expr, Env)
 }
 
+trait Value extends Expr
 
 trait Applyable {
   def apply(args: List[Expr], env: Env): (Expr, Env)
@@ -42,21 +43,19 @@ case class SymbolT(name: String) extends Expr {
   def eval(env: Env) = env.get(this) match {
       case (a: Value) => (a, env)
       case Some(x)    => x.eval(env)
-      case None       => (NullValue, env)
+      case None       => (NullT, env)
   }
 }
 
-case class Int(value: Integer) extends Value {
+case class IntT(value: Integer) extends Value {
   def eval(env: Env) = (this, env)
 }
 
-trait Value extends Expr
-
-object NullValue extends Value {
+object NullT extends Value {
   def eval(env: Env) = (this, env)
 }
 
-case class Bool(value: Boolean) extends Value {
+case class BoolT(value: Boolean) extends Expr {
   def eval(a: Env) = (this, a)
 }
 
