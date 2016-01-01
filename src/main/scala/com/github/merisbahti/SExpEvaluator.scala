@@ -6,7 +6,7 @@ trait Expr {
   def eval(env: Env): (Expr, Env)
 }
 
-trait Value extends Expr
+//trait Value extends Expr
 
 trait Applyable {
   def apply(args: List[Expr], env: Env): (Expr, Env)
@@ -47,17 +47,14 @@ case class SymbolT(name: String) extends Expr {
   }
 }
 
-case class IntT(value: Integer) extends Value {
+trait Value extends Expr {
   def eval(env: Env) = (this, env)
 }
 
-object NullT extends Value {
-  def eval(env: Env) = (this, env)
-}
+case class IntT(value: Integer) extends Value
+case class BoolT(value: Boolean) extends Value
+object NullT extends Value
 
-case class BoolT(value: Boolean) extends Expr {
-  def eval(a: Env) = (this, a)
-}
 
 case class Program(exprs: List[Expr]) {
   def run() = exprs.tail.foldLeft(exprs.head.eval(StdLib.stdLib)) {
