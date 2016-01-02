@@ -32,10 +32,10 @@ case class Comb (exprs: List[Expr]) extends Expr {
   def eval(env: Env) = exprs match {
     case ((a: SymbolT) :: xs) => env.get(a) match {
       case Some(a: Applyable) => a.apply(xs, env)
+      case Some(_: Expr) => (this, env)
       case None => throw new IllegalStateException(s"${a.name} is not defined in the environment.")
-      case _ => throw new IllegalStateException(s"${a.name} is not a proc.")
     }
-    case _ => { println(s"wrong form: $exprs"); throw new IllegalStateException("Wrong form")}
+    case _ => (this, env)
   }
 }
 
@@ -57,7 +57,7 @@ object NullT extends Value
 
 
 case class Program(exprs: List[Expr]) {
-  def run() = exprs.tail.foldLeft(exprs.head.eval(StdLib.stdLib)) {
+  def run(env: Env) = exprs.tail.foldLeft(exprs.head.eval(env)) {
     case ((_, nEnv: Env), exp: Expr) => exp.eval(nEnv)
   }
 }

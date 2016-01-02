@@ -20,15 +20,15 @@ object StdLib {
       }
   })
 
-  // (define abc (2))
-  // (define (abc a1 a2) (expr/
   def define = Proc({
     (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
       xs match {
         case ((defs: Comb):: List(body:Comb)) =>
           mkFunc(defs.exprs, body, sEnv)
-        case ((newDef: SymbolT) :: List(expr)) => (newDef, sEnv ++ Map(newDef -> expr))
-        case _ => throw new IllegalStateException("2: NonoNo")
+        case ((newDef: SymbolT) :: List(expr)) =>
+          val result = expr.eval(sEnv)
+          (newDef, result._2 ++ Map(newDef -> result._1))
+        case _ => throw new IllegalStateException("Invalid definition")
       }
   })
 
