@@ -2,6 +2,7 @@ package com.github.merisbahti
 
 import org.scalactic.Bool
 import com.github.merisbahti.TypeAliases.Env
+import scala.reflect.ClassTag
 
 package object TypeAliases {
   type Env = Map[SymbolT, Expr]
@@ -47,18 +48,18 @@ object StdLib {
     (NullT, e)
   })
 
-  def evalBool(e: Expr, env: Env): (BoolT, Env) = {
+  def evalTo[T <: Expr: ClassTag](e: Expr, env: Env): (T, Env) = {
     e.eval(env) match {
-      case (x: BoolT, e) => (x, e)
-      case _             => throw new Error("Unexpected non-boolean value")
+      case (x: T, e) => (x, e)
+      case _         => throw new Error("Unexpected non-boolean value")
     }
   }
 
   def predicateProc(op: (Boolean, Boolean) => (Boolean)) =
     Proc((xs, env) => {
-      val res = evalBool(xs.head.eval, env)
+      val res = evalTo[BoolT](xs.head.eval, env)
       xs.tail.foldLeft(res) { case ((leftExpr, env), unevaledExpr) =>
-        val (rightExpr, newEnv) = evalBool(unevaledExpr, env)
+        val (rightExpr, newEnv) = evalTo[BoolT](unevaledExpr, env)
         (BoolT(op(leftExpr.value, rightExpr.value)), newEnv)
       }
     })
