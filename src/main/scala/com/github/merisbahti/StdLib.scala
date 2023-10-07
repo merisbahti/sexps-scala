@@ -9,21 +9,14 @@ package object TypeAliases {
 }
 
 object StdLib {
-  def arithmeticProc(op: (Integer, Integer) => (Integer)) = Proc({
-    (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
-      xs.head.eval(sEnv) match {
-        case (a: IntT, e: Map[SymbolT, Expr]) =>
-          xs.tail.foldLeft(xs.head.eval(sEnv)) {
-            case ((IntT(sum), env: Map[SymbolT, Expr]), a: Expr) =>
-              a.eval(env) match {
-                case (IntT(value), nEnv) => (IntT(op(sum, value)), nEnv)
-                case _ =>
-                  throw new ArithmeticException("Not int found in arit: 2")
-              }
-          }
-        case _ => throw new ArithmeticException("Not int found in arit: 1")
+  def arithmeticProc(op: (Integer, Integer) => (Integer)) =
+    Proc((xs, env) => {
+      val res = evalTo[IntT](xs.head.eval, env)
+      xs.tail.foldLeft(res) { case ((leftExpr, env), unevaledExpr) =>
+        val (rightExpr, newEnv) = evalTo[IntT](unevaledExpr, env)
+        (IntT(op(leftExpr.value, rightExpr.value)), newEnv)
       }
-  })
+    })
 
   def define = Proc({ (xs: List[Expr], sEnv: Map[SymbolT, Expr]) =>
     xs match {
@@ -51,7 +44,7 @@ object StdLib {
   def evalTo[T <: Expr: ClassTag](e: Expr, env: Env): (T, Env) = {
     e.eval(env) match {
       case (x: T, e) => (x, e)
-      case _         => throw new Error("Unexpected non-boolean value")
+      case (v, _)    => throw new Error(s"Unexpected value: $v")
     }
   }
 

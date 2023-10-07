@@ -61,6 +61,16 @@ class SExpEvaluatorSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
     }
   }
 
+  "StdLib" should "have support for `and failure " in {
+
+    SExpParser.parse(SExpParser.comb, "(and 1 true)") match {
+      case SExpParser.Success(matched, _) =>
+        assertThrows[Error](matched.eval(stdLib)._1)
+      case _ => fail("Failed to parse test-input")
+    }
+
+  }
+
   "Environment" should "be able to resolve symbols which point to values" in {
     val env = StdLib.stdLib ++ Map(SymbolT("one") -> IntT(1))
     val input = "(+ one one one one)"
@@ -74,7 +84,7 @@ class SExpEvaluatorSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
   "StdLib +" should "fail if all expressions except head aren't Int" in {
     val inputs = List("(+ 3 2 +)", "(+ (display 3) 2)")
     inputs.foreach { (input: String) =>
-      intercept[ArithmeticException] {
+      intercept[Error] {
         SExpParser.parse(SExpParser.comb, input) match {
           case SExpParser.Success(matched, _) => matched.eval(StdLib.stdLib)
           case _ => fail("Failed to parse test-input")
