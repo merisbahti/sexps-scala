@@ -11,7 +11,7 @@ package object TypeAliases {
 object StdLib {
   def arithmeticProc(op: (Integer, Integer) => (Integer)) =
     Proc((xs, env) => {
-      val res = evalTo[IntT](xs.head.eval, env)
+      val res = evalTo[IntT](xs.head, env)
       xs.tail.foldLeft(res) { case ((leftExpr, env), unevaledExpr) =>
         val (rightExpr, newEnv) = evalTo[IntT](unevaledExpr, env)
         (IntT(op(leftExpr.value, rightExpr.value)), newEnv)
@@ -50,7 +50,7 @@ object StdLib {
 
   def predicateProc(op: (Boolean, Boolean) => (Boolean)) =
     Proc((xs, env) => {
-      val res = evalTo[BoolT](xs.head.eval, env)
+      val res = evalTo[BoolT](xs.head, env)
       xs.tail.foldLeft(res) { case ((leftExpr, env), unevaledExpr) =>
         val (rightExpr, newEnv) = evalTo[BoolT](unevaledExpr, env)
         (BoolT(op(leftExpr.value, rightExpr.value)), newEnv)

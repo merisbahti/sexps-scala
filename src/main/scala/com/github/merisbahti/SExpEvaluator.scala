@@ -2,7 +2,7 @@ package com.github.merisbahti
 
 import TypeAliases._
 
-trait Expr {
+sealed trait Expr {
   def eval(env: Env): (Expr, Env)
 }
 
